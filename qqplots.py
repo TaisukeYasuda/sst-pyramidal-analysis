@@ -54,3 +54,8 @@ def simulate(p,q,n):
         else:
             nonzero += x
     return num_zeros, nonzero
+
+for model in models:
+    params = pd.read_excel('../params/'+model+'.xlsx')
+    for cell in cells:
+        sheet_name = cell+'_1trials'
