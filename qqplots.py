@@ -60,8 +60,16 @@ for model in models:
     for cell in cells:
         #### read data ####
         param = params[cell+'_1trials']
-        data = cell_data[cell][1]
+        data = cell_data[cell][1].tolist()
         #### extract data ####
         p, q = param['p'], param['q']
         n = 10
-        num_zeros, nonzero = simulate(p,q,n)
+        sim_num_zeros, sim_nonzero = simulate(p,q,n)
+        sim_nonzero = pd.Series(sim_nonzero)
+        obs_num_zeros = data.count(0)
+        obs_nonzero = [x for x in data if x != 0]
+
+        num_quantiles = len(obs_nonzero)
+        quantile = 1.0 / num_quantiles
+        quantiles = [quantile * i for i in range(1,num_quantiles+1)]
+        values = [sim_nonzero.quantile(q) for q in quantiles]
