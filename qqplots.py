@@ -20,10 +20,16 @@ def get_cell_data():
 models = ['pq','xq','px','xx','ptq','qtp']
 cell_data = get_cell_data()
 cells = cell_data.keys()
+num_simulate = 10000
 
 def cell_response(p,q,n):
     '''simulate a single cell response'''
-    assert(len(p) == n and len(q) == n)
+    try:
+        assert(len(p) == n and len(q) == n)
+    except:
+        print(p)
+        print(q)
+        assert(False)
 
     response = 0
     for i in range(n):
@@ -39,6 +45,10 @@ def simulate(p,q,n):
     assert(type(n) == int)
 
     #### if p or q is fixed, then just repeat it n times ####
+    if (type(p) == pd.core.series.Series):
+        p = p.tolist()
+    if (type(q) == pd.core.series.Series):
+        q = q.tolist()
     if (type(p) == int or type(p) == float or type(p) == np.float64):
         p = [p]*n
     elif (len(p) == 1):
@@ -48,7 +58,6 @@ def simulate(p,q,n):
     elif (len(q) == 1):
         q = q * n
 
-    num_simulate = 10000
     num_zeros = 0
     nonzero = list()
     for i in xrange(num_simulate):
@@ -62,8 +71,12 @@ def simulate(p,q,n):
 #### script for qq plot statistical analysis ####
 
 for model in models:
+    print(model)
     params = pd.read_excel('../params/'+model+'.xlsx',sheetname=None)
+    excel = pd.ExcelWriter('binomial_'+model+'.xlsx')
+    binomial_stats = dict()
     for cell in cells:
+        print('\t'+cell)
         plt.cla()
         #### read data ####
         param = params[cell+'_1trials']
@@ -104,9 +117,20 @@ for model in models:
             ith_quantile = pd.Series(samples[i])
             lo = ith_quantile.quantile(0.025)
             hi = ith_quantile.quantile(0.975)
-            plt.scatter([values[i],values[i]],[lo,hi],color='green')
-
+            plt.scatter([values[i],values[i]],[lo,hi],color='yellow')
         plt.scatter(values,obs_nonzero,color='red')
+
+        #### save results ####
         plt.savefig('./qqplots/'+model+'/'+cell+'.png')
+
+        #### statistics on 0 count ####
+        p_hat = sim_num_zeros * 1.0 / num_simulate
+        p_obs = obs_num_zeros * 1.0 / len(data)
+        var = p_hat*(1 - p_hat) / num_simulate
+        stats = [p_hat - 2*var,p_hat + 2*var,p_hat,p_obs]
+        index = ['lo','hi','p hat','p obs']
+        binomial_stats[cell] = pd.Series(stats,index=index)
+    pd.DataFrame(binomial_stats).to_excel(excel)
+    excel.save()
 
 print('done!')
