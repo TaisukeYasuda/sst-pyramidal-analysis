@@ -5,7 +5,6 @@
 # Taisuke Yasuda
 #########################################################################
 
-import cell_statistics as cs
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -14,8 +13,11 @@ import pandas as pd
 
 ############ data to use ############
 
+def get_cell_data():
+    return pd.read_excel('./cleaned_amplitude_data.xlsx')
+
 model_names = ['pq','xq','px','xx','ptq','qtp']
-cell_data = cs.cell_data()
+cell_data = get_cell_data()
 cells = cell_data.keys()
 
 def cell_response(p,q,n):
@@ -55,9 +57,15 @@ def simulate(p,q,n):
             nonzero += x
     return num_zeros, nonzero
 
+#### script for qq plot statistical analysis ####
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
 for model in models:
     params = pd.read_excel('../params/'+model+'.xlsx')
     for cell in cells:
+        ax.cla()
         #### read data ####
         param = params[cell+'_1trials']
         data = cell_data[cell][1].tolist()
@@ -73,3 +81,9 @@ for model in models:
         quantile = 1.0 / num_quantiles
         quantiles = [quantile * i for i in range(1,num_quantiles+1)]
         values = [sim_nonzero.quantile(q) for q in quantiles]
+
+        #### plot observed quantiles against simulated quantiles ####
+        ax.set_xlabel('Quantiles of Simulated Distribution')
+        ax.set_ylabel('Quantiles of Observed Distribution')
+        ax.set_title('QQ Plot for ' + cell)
+        ax.plot(values,obs_nonzero,color='blue')
