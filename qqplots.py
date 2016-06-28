@@ -41,8 +41,12 @@ def simulate(p,q,n):
     #### if p or q is fixed, then just repeat it n times ####
     if (type(p) == int or type(p) == float or type(p) == np.float64):
         p = [p]*n
+    elif (len(p) == 1):
+        p = p * n
     if (type(p) == int or type(q) == float or type(q) == np.float64):
         q = [q]*n
+    elif (len(q) == 1):
+        q = q * n
 
     num_simulate = 10000
     num_zeros = 0
@@ -72,6 +76,7 @@ for model in models:
         obs_num_zeros = data.count(0)
         obs_nonzero = sorted([x for x in data if x != 0])
 
+        #### compute quantiles ####
         num_quantiles = len(obs_nonzero)
         quantile = 1.0 / num_quantiles
         quantiles = [quantile * i for i in range(1,num_quantiles+1)]
@@ -82,7 +87,7 @@ for model in models:
         plt.ylabel('Quantiles of Observed Distribution')
         plt.title('QQ Plot for '+cell+' with model '+model)
 
-        #### compute confidence intervals ####
+        #### sample from simulated distribution ####
         samples = list()
         sim_nonzero = sim_nonzero.tolist()
         for i in xrange(1000):
@@ -92,7 +97,14 @@ for model in models:
             sample = sorted(sample)
             plt.scatter(values,sample,color='blue')
             samples.append(sample)
-        # samples = np.array(samples).transpose()
+
+        #### compute confidence intervals ####
+        samples = np.array(samples).transpose()
+        for i in range(num_quantiles):
+            ith_quantile = pd.Series(samples[i])
+            lo = ith_quantile.quantile(0.025)
+            hi = ith_quantile.quantile(0.975)
+            plt.scatter([values[i],values[i]],[lo,hi],color='green')
 
         plt.scatter(values,obs_nonzero,color='red')
         plt.savefig('./qqplots/'+model+'/'+cell+'.png')
