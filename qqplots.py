@@ -58,4 +58,10 @@ def simulate(p,q,n):
 for model in models:
     params = pd.read_excel('../params/'+model+'.xlsx')
     for cell in cells:
-        sheet_name = cell+'_1trials'
+        #### read data ####
+        param = params[cell+'_1trials']
+        data = cell_data[cell][1]
+        #### extract data ####
+        p, q = param['p'], param['q']
+        n = 10
+        num_zeros, nonzero = simulate(p,q,n)
