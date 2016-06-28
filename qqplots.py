@@ -7,6 +7,7 @@
 
 import numpy as np
 import math
+import random
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
@@ -14,24 +15,21 @@ import pandas as pd
 ############ data to use ############
 
 def get_cell_data():
-    return pd.read_excel('./cleaned_amplitude_data.xlsx')
+    return pd.read_excel('./cleaned_amplitude_data.xlsx',sheetname=None)
 
-model_names = ['pq','xq','px','xx','ptq','qtp']
+models = ['pq','xq','px','xx','ptq','qtp']
 cell_data = get_cell_data()
 cells = cell_data.keys()
 
 def cell_response(p,q,n):
     '''simulate a single cell response'''
-    #### preconditions ####
-    assert(type(p) == list or type(p) == np.ndarray)
-    assert(type(q) == list or type(q) == np.ndarray)
-    assert(len(p) == n && len(q) == n)
+    assert(len(p) == n and len(q) == n)
 
     response = 0
     for i in range(n):
         p[i] = min(max(p[i],0),1)
         q[i] = max(q[i],0)
-        if (binomial(1,p[i])):
+        if (np.random.binomial(1,p[i])):
             response += q[i]
     return response
 
@@ -54,18 +52,15 @@ def simulate(p,q,n):
         if (x == 0):
             num_zeros += 1
         else:
-            nonzero += x
+            nonzero.append(x)
     return num_zeros, nonzero
 
 #### script for qq plot statistical analysis ####
 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-
 for model in models:
-    params = pd.read_excel('../params/'+model+'.xlsx')
+    params = pd.read_excel('../params/'+model+'.xlsx',sheetname=None)
     for cell in cells:
-        ax.cla()
+        plt.cla()
         #### read data ####
         param = params[cell+'_1trials']
         data = cell_data[cell][1].tolist()
@@ -75,15 +70,31 @@ for model in models:
         sim_num_zeros, sim_nonzero = simulate(p,q,n)
         sim_nonzero = pd.Series(sim_nonzero)
         obs_num_zeros = data.count(0)
-        obs_nonzero = [x for x in data if x != 0]
+        obs_nonzero = sorted([x for x in data if x != 0])
 
         num_quantiles = len(obs_nonzero)
         quantile = 1.0 / num_quantiles
         quantiles = [quantile * i for i in range(1,num_quantiles+1)]
-        values = [sim_nonzero.quantile(q) for q in quantiles]
+        values = sorted([sim_nonzero.quantile(q) for q in quantiles])
 
-        #### plot observed quantiles against simulated quantiles ####
-        ax.set_xlabel('Quantiles of Simulated Distribution')
-        ax.set_ylabel('Quantiles of Observed Distribution')
-        ax.set_title('QQ Plot for ' + cell)
-        ax.plot(values,obs_nonzero,color='blue')
+        #### qq plot ####
+        plt.xlabel('Quantiles of Simulated Distribution')
+        plt.ylabel('Quantiles of Observed Distribution')
+        plt.title('QQ Plot for '+cell+' with model '+model)
+
+        #### compute confidence intervals ####
+        samples = list()
+        sim_nonzero = sim_nonzero.tolist()
+        for i in xrange(1000):
+            sample = list()
+            for j in xrange(num_quantiles):
+                sample.append(np.random.choice(sim_nonzero))
+            sample = sorted(sample)
+            plt.scatter(values,sample,color='blue')
+            samples.append(sample)
+        # samples = np.array(samples).transpose()
+
+        plt.scatter(values,obs_nonzero,color='red')
+        plt.savefig('./qqplots/'+model+'/'+cell+'.png')
+
+print('done!')
