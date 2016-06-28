@@ -73,7 +73,7 @@ def simulate(p,q,n):
 for model in models:
     print(model)
     params = pd.read_excel('../params/'+model+'.xlsx',sheetname=None)
-    excel = pd.ExcelWriter('binomial_'+model+'.xlsx')
+    excel = pd.ExcelWriter('./binomial/binomial_'+model+'.xlsx')
     binomial_stats = dict()
     for cell in cells:
         print('\t'+cell)
