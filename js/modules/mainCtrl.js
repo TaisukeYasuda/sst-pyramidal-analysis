@@ -1,4 +1,4 @@
-mainApp.controller('mainCtrl', function($scope, $http) {
+mainApp.controller('mainCtrl', function($scope) {
     $scope.firstName = "Taisuke";
     $scope.lastName = "Yasuda";
 
