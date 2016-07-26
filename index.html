@@ -18,59 +18,86 @@
   <script src="js/modules/controller.js"></script>
   <script src="js/modules/directives.js"></script>
 
-  <title>AngularJS Google Charts</title>
+  <title>SST-Pyr Fitting</title>
 
 </head>
 
 <body>
   <body>
     <div id="chart" ng-controller="ctrl">
+      <h1 ng-hide="cellSelected">Select a cell to fit!</h1>
       <select ng-model="selectedCell" ng-options="cell for cell in cells" ng-change="changeCell()"></select>
 
-      <!--
-      <pie-chart data="chartData" title="{{selectedCell}}" width="{{chartWidth}}" height="{{chartHeight}}" select="selectRow(selectedRowIndex)"></pie-chart>
-      -->
-      <histogram data="cellData[selectedCell]" title="{{selectedCell}}" width="{{chartWidth}}" height="{{chartHeight}}"></histogram>
+      <div ng-show="cellSelected">
+        <histogram data="histogramData"
+                  title="{{selectedCell}}"
+                  width="{{chartWidth}}"
+                  height="{{chartHeight}}">
+        </histogram>
 
-      Show data: <input type="checkbox" ng-model="showTable">
-      <div id="table" ng-show="showTable">
-        <table>
-          <th>Stimulus No.</th>
-          <th ng-repeat="(trial,value) in cellData[selectedCell][1]">
-            {{trial}}
-          </th>
-          <tr ng-repeat="(col,entries) in cellData[selectedCell]">
-            <td class="row-header">{{col}}</td>
-            <td ng-repeat="(trial,value) in entries">{{value}}</td>
+        <h2>Settings</h2>
+        <table id="settings">
+          <tr>
+            <td>Include Zeros</td>
+            <td><input type="checkbox" ng-model="zeros" ng-change="changeZeros()"></td>
+          </tr>
+          <tr>
+            <td>Trial Selection</td>
+            <td style="text-align: left">
+              <input type="radio" name="trialChoice" value="range" checked> Range<br>
+              <input type="radio" name="trialChoice" value="individual"> Individual
+            </td>
+          </tr>
+          <tr>
+            <td>Trials</td>
+            <td><input type="range" name="trialNumber" value=1 min="1" max="10"><br></td>
+          </tr>
+          <tr>
+            <td>Width</td>
+            <td><input ng-model="chartWidth"></td>
+          </tr>
+          <tr>
+            <td>Height</td>
+            <td><input ng-model="chartHeight"></td>
+          </tr>
+          <tr>
+            <td>Show data</td>
+            <td><input type="checkbox" ng-model="showTable"></td>
           </tr>
         </table>
-      </div>
 
-      <!--
-      <div class="left">
-           <h2>Chart Data</h2>
+        <div id="table" ng-show="showTable">
           <table>
-              <tr ng-repeat="row in chartData" ng-class="rowClass($index)">
-                  <td>
-                      <input ng-model="row[0]">
-                      <input ng-model="row[1]">
-                      <button ng-click="deleteRow($index)">&times;</button>
-                  </td>
-              </tr>
+            <th>Stimulus No.</th>
+            <th ng-repeat="(trial,value) in cellData[selectedCell][1]">
+              {{trial}}
+            </th>
+            <tr ng-repeat="(col,entries) in cellData[selectedCell]">
+              <td class="row-header">{{col}}</td>
+              <td ng-repeat="(trial,value) in entries">{{value}}</td>
+            </tr>
           </table>
-          <button ng-click="addRow()">Add new row</button>
-      </div>
-      -->
-      <div class="right">
-          <br/>Width:
-          <input ng-model="chartWidth">
-          <br/>Height:
-          <input ng-model="chartHeight">
-          <br/>
+        </div>
+
+        <!--
+        <div class="left">
+             <h2>Chart Data</h2>
+            <table>
+                <tr ng-repeat="row in chartData" ng-class="rowClass($index)">
+                    <td>
+                        <input ng-model="row[0]">
+                        <input ng-model="row[1]">
+                        <button ng-click="deleteRow($index)">&times;</button>
+                    </td>
+                </tr>
+            </table>
+            <button ng-click="addRow()">Add new row</button>
+        </div>
+        -->
+
       </div>
     </div>
-</body>
-
+  </body>
 </body>
 
 </html>

@@ -50,3 +50,7 @@ table tr:nth-child(even) {
   font-weight: bold;
   text-align: center;
 }
+
+#settings {
+  text-align: center;
+}
