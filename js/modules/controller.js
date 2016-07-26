@@ -1,6 +1,6 @@
 app.controller('ctrl', function ($scope, $http) {
-    $scope.base = "http://localhost:8000/";
-    // $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
+    // $scope.base = "http://localhost:8000/";
+    $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
     if ($scope.cells == undefined) {
