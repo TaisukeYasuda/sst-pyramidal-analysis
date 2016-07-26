@@ -39,13 +39,16 @@ app.directive('histogram', function ($timeout) {
                         draw.triggered = false;
                         var label, value;
                         data.removeRows(0, data.getNumberOfRows());
-                        angular.forEach($scope.data, function (row,rowNum) {
-                            angular.forEach(row, function(entry) {
-                                label = rowNum;
-                                value = parseFloat(entry, 3);
-                                data.addRow([label,value]);
-                            });
-                        });
+                        // angular.forEach($scope.data, function (row,rowNum) {
+                        //     angular.forEach(row, function(entry) {
+                        //         label = rowNum;
+                        //         value = parseFloat(entry, 3);
+                        //         data.addRow([label,value]);
+                        //     });
+                        // });
+                        for (var i = 0; i < $scope.data.length; i++) {
+                            data.addRow($scope.data[i]);
+                        }
                         var options = {
                             'title': $scope.title,
                             'width': $scope.width,

@@ -44,13 +44,13 @@
           <tr>
             <td>Trial Selection</td>
             <td style="text-align: left">
-              <input type="radio" name="trialChoice" value="range" checked> Range<br>
-              <input type="radio" name="trialChoice" value="individual"> Individual
+              <input type="radio" ng-model="trialChoice" value="range" checked> Range<br>
+              <input type="radio" ng-model="trialChoice" value="individual"> Individual
             </td>
           </tr>
           <tr>
             <td>Trials</td>
-            <td><input type="range" name="trialNumber" value=1 min="1" max="10"><br></td>
+            <td><input type="range" ng-model="trialNumber" value=1 min="1" max="10"><br></td>
           </tr>
           <tr>
             <td>Width</td>
