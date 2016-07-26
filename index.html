@@ -26,10 +26,11 @@
   <body>
     <div id="chart" ng-controller="ctrl">
       <select ng-model="selectedCell" ng-options="cell for cell in cells" ng-change="changeCell()"></select>
-      <p ng-bind="objectinfo"></p>
-      <p ng-bind="moreinfo"></p>
 
+      <!--
       <pie-chart data="chartData" title="{{selectedCell}}" width="{{chartWidth}}" height="{{chartHeight}}" select="selectRow(selectedRowIndex)"></pie-chart>
+      -->
+      <histogram data="cellData[selectedCell]" title="{{selectedCell}}" width="{{chartWidth}}" height="{{chartHeight}}"></histogram>
 
       Show data: <input type="checkbox" ng-model="showTable">
       <div id="table" ng-show="showTable">
@@ -45,6 +46,7 @@
         </table>
       </div>
 
+      <!--
       <div class="left">
            <h2>Chart Data</h2>
           <table>
@@ -58,9 +60,8 @@
           </table>
           <button ng-click="addRow()">Add new row</button>
       </div>
+      -->
       <div class="right">
-           <h2>Chart Info</h2> Title:
-          <input ng-model="chartTitle" class="title">
           <br/>Width:
           <input ng-model="chartWidth">
           <br/>Height:

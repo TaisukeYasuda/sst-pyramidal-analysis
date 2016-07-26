@@ -1,5 +1,5 @@
 app.controller('ctrl', function ($scope, $http) {
-    // $scope.base = "http://localhost:8000/";
+    //$scope.base = "http://localhost:8000/";
     $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
@@ -14,16 +14,16 @@ app.controller('ctrl', function ($scope, $http) {
     }
 
     // Initial chart data
-    $scope.chartTitle = "Lead Sources";
-    $scope.chartWidth = 500;
-    $scope.chartHeight = 320;
-    $scope.chartData = [
-        ['Ad Flyers', 11],
-        ['Web (Organic)', 4],
-        ['Web (PPC)', 4],
-        ['Yellow Pages', 7],
-        ['Showroom', 3]
-    ];
+    $scope.chartTitle = "No Cell Selected";
+    $scope.chartWidth = 800;
+    $scope.chartHeight = 500;
+    // $scope.chartData = [
+    //     ['Ad Flyers', 11],
+    //     ['Web (Organic)', 4],
+    //     ['Web (PPC)', 4],
+    //     ['Yellow Pages', 7],
+    //     ['Showroom', 3]
+    // ];
 
     $scope.deleteRow = function (index) {
         $scope.chartData.splice(index, 1);
