@@ -1,40 +1,75 @@
+
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="utf-8">
-  <title>SST-Pyr Fit</title>
+
   <!-- angular js -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-  <!-- plotly -->
-  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
-  <!-- d3 -->
-  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- google charts -->
+  <script type="text/javascript" src="http://www.google.com/jsapi?ext.js"></script>
+  <!--
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  -->
+  <!-- css -->
+  <link rel="stylesheet" href="css/index.css">
   <!-- angular modules -->
-  <script src="js/modules/mainApp.js"></script>
-  <script src="js/modules/mainCtrl.js"></script>
+  <script src="js/modules/app.js"></script>
+  <script src="js/modules/controller.js"></script>
+  <script src="js/modules/directives.js"></script>
+
+  <title>AngularJS Google Charts</title>
+
 </head>
 
 <body>
+  <body>
+    <div id="chart" ng-controller="ctrl">
+      <select ng-model="selectedCell" ng-options="cell for cell in cells" ng-change="changeCell()"></select>
+      <p ng-bind="objectinfo"></p>
+      <p ng-bind="moreinfo"></p>
 
-  <div ng-app="mainApp" ng-controller="mainCtrl">
+      <pie-chart data="chartData" title="{{selectedCell}}" width="{{chartWidth}}" height="{{chartHeight}}" select="selectRow(selectedRowIndex)"></pie-chart>
 
-  First Name: <input type="text" ng-model="firstName"><br>
-  Last Name: <input type="text" ng-model="lastName"><br>
-  <br>
-  Full Name: {{firstName + " " + lastName}}
+      Show data: <input type="checkbox" ng-model="showTable">
+      <div id="table" ng-show="showTable">
+        <table>
+          <th>Stimulus No.</th>
+          <th ng-repeat="(trial,value) in cellData[selectedCell][1]">
+            {{trial}}
+          </th>
+          <tr ng-repeat="(col,entries) in cellData[selectedCell]">
+            <td class="row-header">{{col}}</td>
+            <td ng-repeat="(trial,value) in entries">{{value}}</td>
+          </tr>
+        </table>
+      </div>
 
-  </div>
-
-  <div id="tester"></div>
-
-  <script>
-    TESTER = document.getElementById('tester');
-	  Plotly.plot( TESTER, [{
-	  x: [1, 2, 3, 4, 5],
-	  y: [1, 2, 4, 8, 16] }], {
-	  margin: { t: 0 } } );
-  </script>
+      <div class="left">
+           <h2>Chart Data</h2>
+          <table>
+              <tr ng-repeat="row in chartData" ng-class="rowClass($index)">
+                  <td>
+                      <input ng-model="row[0]">
+                      <input ng-model="row[1]">
+                      <button ng-click="deleteRow($index)">&times;</button>
+                  </td>
+              </tr>
+          </table>
+          <button ng-click="addRow()">Add new row</button>
+      </div>
+      <div class="right">
+           <h2>Chart Info</h2> Title:
+          <input ng-model="chartTitle" class="title">
+          <br/>Width:
+          <input ng-model="chartWidth">
+          <br/>Height:
+          <input ng-model="chartHeight">
+          <br/>
+      </div>
+    </div>
+</body>
 
 </body>
+
 </html>

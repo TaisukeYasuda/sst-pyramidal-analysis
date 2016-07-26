@@ -1,0 +1,52 @@
+body {
+  font-size: 0.9em;
+}
+pie-chart {
+}
+.bottom {
+  clear: both;
+  font-size: 0.9em;
+  color: grey;
+  padding: 2em 1em 0 1em;
+}
+h2 {
+  font-size: 1.3em;
+  margin: 0.8em 0.5em 0.1em 0.5em;
+}
+input {
+  font-size: 0.8em;
+  width: 6em;
+}
+input.title {
+  width: 12em;
+}
+tr.selected td {
+  background-color: red;
+}
+.left {
+  float: left;
+  margin-right: 4em;
+}
+
+#table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  table-layout: fixed;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+#table {
+  height: 100%;
+  width: auto;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+.row-header {
+  font-weight: bold;
+  text-align: center;
+}
