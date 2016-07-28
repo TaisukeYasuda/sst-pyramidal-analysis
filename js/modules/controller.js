@@ -1,5 +1,5 @@
 app.controller('ctrl', function ($scope, $http) {
-    //$scope.base = "http://localhost:8000/";
+    // $scope.base = "http://localhost:8000/";
     $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
@@ -15,6 +15,9 @@ app.controller('ctrl', function ($scope, $http) {
     }
 
     $scope.cellSelected = ($scope.selectedCell != undefined);
+    $scope.default = {};
+    $scope.default.choice = 'range';
+    $scope.default.number = 10;
 
     // initial chart data
     $scope.chartTitle = "No Cell Selected";
@@ -33,32 +36,40 @@ app.controller('ctrl', function ($scope, $http) {
     $scope.rowClass = function (index) {
         return ($scope.selected === index) ? "selected" : "";
     };
-    $scope.processData = function (cell) {
+    $scope.processData = function (cell, choice, number) {
         var result = [];
         angular.forEach(cell, function (entries, col) {
             angular.forEach(entries, function (value) {
-                result.push([col,parseFloat(value,3)]);
+                var valid = false;
+                if (choice == 'range' && parseInt(col) <= number) {
+                    valid = true;
+                } else if (choice == 'individual' && parseInt(col) == number) {
+                    valid = true;
+                }
+                if (valid) result.push([col,parseFloat(value,3)]);
             });
         });
         return result;
     };
     $scope.changeCell = function () {
         $scope.zeros = true;
+        $scope.trial = {};
+        $scope.trial.choice = $scope.default.choice;
+        $scope.trial.number = $scope.default.number;
         var name = $scope.selectedCell;
         if ($scope.cellData[name] == undefined) {
             $http.get($scope.base+"data/json/"+name+".json").then(function(response) {
                 $scope.cellData[name] = response.data;
-                $scope.histogramData = $scope.processData(response.data);
+                $scope.histogramData = $scope.processData(response.data,$scope.trial.choice,$scope.trial.number);
             });
         } else {
-            $scope.histogramData = $scope.processData($scope.cellData[name]);
+            $scope.histogramData = $scope.processData($scope.cellData[name],$scope.trial.choice,$scope.trial.number);
         }
         $scope.cellSelected = true;
     };
-    $scope.changeZeros = function () {
-        if ($scope.zeros) {
-            $scope.histogramData = $scope.processData($scope.cellData[$scope.selectedCell]);
-        } else {
+    $scope.changeData = function () {
+        $scope.histogramData = $scope.processData($scope.cellData[$scope.selectedCell],$scope.trial.choice,$scope.trial.number);
+        if (!$scope.zeros) {
             for (var i = $scope.histogramData.length-1; i >= 0; i--) {
                 var row = $scope.histogramData[i];
                 if (row[1] == 0.0) {
