@@ -6,6 +6,7 @@ app.directive('histogram', function ($timeout) {
             width: '@width',
             height: '@height',
             zeros: '@zeros',
+            bins: '@bins',
             data: '=data'
         },
         link: function ($scope, $elm, $attr) {
@@ -31,6 +32,9 @@ app.directive('histogram', function ($timeout) {
             $scope.$watch('height', function () {
                 draw();
             });
+            $scope.$watch('bins', function () {
+                draw();
+            });
 
             function draw() {
                 if (!draw.triggered) {
@@ -53,6 +57,7 @@ app.directive('histogram', function ($timeout) {
                             'title': $scope.title,
                             'width': $scope.width,
                             'height': $scope.height,
+                            'histogram': {'bucketSize': $scope.bins},
                             'dataOpacity': 0.8
                         };
                         chart.draw(data, options);

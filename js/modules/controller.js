@@ -14,13 +14,13 @@ app.controller('ctrl', function ($scope, $http) {
         $scope.cellDataProcessed = {};
     }
 
-    $scope.cellSelected = ($scope.selectedCell != undefined);
     $scope.default = {};
     $scope.default.choice = 'range';
     $scope.default.number = 10;
+    $scope.binSize = 0.01;
+    $scope.cellSelected = ($scope.selectedCell != undefined);
 
     // initial chart data
-    $scope.chartTitle = "No Cell Selected";
     $scope.chartWidth = 800;
     $scope.chartHeight = 500;
 
