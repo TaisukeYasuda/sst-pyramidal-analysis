@@ -1,5 +1,5 @@
 app.controller('ctrl', function ($scope, $http) {
-    // $scope.base = "http://localhost:8000/";
+    //$scope.base = "http://localhost:8000/";
     $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
@@ -81,10 +81,8 @@ app.controller('ctrl', function ($scope, $http) {
     };
     $scope.simulate = function () {
         var numReps = $scope.histogramData.length;
-        var responses = simulate($scope.fitData[$scope.selectedCell], numReps);
+        var responses = simulate($scope.fitData.data[$scope.selectedCell], numReps);
         $scope.histogramSimData = responses.slice();
-        alert('simulated: '+$scope.histogramSimData);
-        // $scope.redraw();
     }
     $scope.processData = function (cell, choice, number) {
         var result = [];
@@ -118,8 +116,8 @@ app.controller('ctrl', function ($scope, $http) {
         $scope.cellSelected = true;
 
         // information for fitting cell
-        if ($scope.fitData[$scope.selectedCell] == undefined) {
-            $scope.fitData[$scope.selectedCell] = $scope.fitData.defaultData;
+        if ($scope.fitData.data[$scope.selectedCell] == undefined) {
+            $scope.fitData.data[$scope.selectedCell] = JSON.parse(JSON.stringify($scope.fitData.defaultData));
         }
         $scope.histogramSimData = undefined;
     };

@@ -10,6 +10,8 @@
   <!-- bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!-- jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- css -->
   <link rel="stylesheet" href="css/index.css">
   <!-- angular modules -->
@@ -37,7 +39,7 @@
         </histogram>
 
         <h2>Simulated Model</h2>
-        <div ng-repeat="contact in fitData[selectedCell]" class="panel panel-default contact">
+        <div ng-repeat="contact in fitData.data[selectedCell]" class="panel panel-default contact">
           Mean: <input type="number" step="0.001" min="0" ng-model="contact.q"><br>
           <hr>
           Std: <input type="number" step="0.001" min="0" ng-model="contact.s"><br>
