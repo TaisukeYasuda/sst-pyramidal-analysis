@@ -5,8 +5,9 @@ app.directive('histogram', function ($timeout) {
             title: '@title',
             width: '@width',
             height: '@height',
-            zeros: '@zeros',
             bins: '@bins',
+            simdata: '=simdata',
+            redraw: '@redraw',
             data: '=data'
         },
         link: function ($scope, $elm, $attr) {
@@ -15,6 +16,7 @@ app.directive('histogram', function ($timeout) {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Trial');
             data.addColumn('number', 'Amplitude');
+            data.addColumn('number', 'Simulated Amplitude');
             var chart = new google.visualization.Histogram($elm[0]);
 
             draw();
@@ -23,16 +25,16 @@ app.directive('histogram', function ($timeout) {
             $scope.$watch('data', function () {
                 draw();
             }, true); // true is for deep object equality checking
+            $scope.$watch('simdata', function () {
+                draw();
+            }, true);
             $scope.$watch('title', function () {
                 draw();
             });
-            $scope.$watch('width', function () {
-                draw();
-            });
-            $scope.$watch('height', function () {
-                draw();
-            });
             $scope.$watch('bins', function () {
+                draw();
+            });
+            $scope.$watch('redraw', function () {
                 draw();
             });
 
@@ -43,20 +45,21 @@ app.directive('histogram', function ($timeout) {
                         draw.triggered = false;
                         var label, value;
                         data.removeRows(0, data.getNumberOfRows());
-                        // angular.forEach($scope.data, function (row,rowNum) {
-                        //     angular.forEach(row, function(entry) {
-                        //         label = rowNum;
-                        //         value = parseFloat(entry, 3);
-                        //         data.addRow([label,value]);
-                        //     });
-                        // });
                         for (var i = 0; i < $scope.data.length; i++) {
-                            data.addRow($scope.data[i]);
+                            var row;
+                            if ($scope.simdata == undefined) {
+                                row = $scope.data[i].slice();
+                                row[2] = undefined;
+                            } else {
+                                row = $scope.data[i].slice();
+                                row[2] = $scope.simdata[i];
+                            }
+                            data.addRow(row);
                         }
                         var options = {
                             'title': $scope.title,
-                            'width': $scope.width,
-                            'height': $scope.height,
+                            'width': 800,
+                            'height': 500,
                             'histogram': {'bucketSize': $scope.bins},
                             'dataOpacity': 0.8
                         };

@@ -1,5 +1,6 @@
 body {
-  font-size: 0.9em;
+  font-size: 14px;
+  padding: 20px;
 }
 pie-chart {
 }
@@ -26,6 +27,13 @@ tr.selected td {
 .left {
   float: left;
   margin-right: 4em;
+}
+.contact {
+  width: 160px;
+  height: 200px;
+  padding: 20px;
+  margin: 10px;
+  float: left;
 }
 
 #table, th , td  {
