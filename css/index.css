@@ -3,12 +3,14 @@ body {
   padding: 20px;
 }
 .settings {
-  padding: 100px;
-  float: right;
-  width: 45%;
-  position: absolute;
-  right: 0px;
+  vertical-align: top;
+  width: 50%;
 }
+.statistics {
+  vertical-align: top;
+  width: 50%;
+}
+
 .bottom {
   clear: both;
   font-size: 0.9em;
