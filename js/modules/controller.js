@@ -32,11 +32,16 @@ app.controller('ctrl', function ($scope, $http) {
     $scope.zoom = 'auto';
     $scope.histHeight = 20;
 
-    $scope.deleteRow = function (index) {
-        $scope.chartData.splice(index, 1);
+    $scope.deleteContact = function (index) {
+        $scope.fitData.data[$scope.selectedCell].splice(index, 1);
     };
-    $scope.addRow = function () {
-        $scope.chartData.push([]);
+    $scope.addContact = function () {
+        $scope.fitData.data[$scope.selectedCell].push(
+          {'p': $scope.modalP, 'q': $scope.modalQ, 's': $scope.modalS}
+        );
+        $scope.modalP = undefined;
+        $scope.modalQ = undefined;
+        $scope.modalS = undefined;
     };
     $scope.selectRow = function (index) {
         $scope.selected = index;
@@ -47,6 +52,7 @@ app.controller('ctrl', function ($scope, $http) {
     $scope.redraw = function () {
         $scope.changed = !$scope.changed;
     };
+
     // standard normal variate using Box-Muller transform.
     function randn_bm() {
         var u = 1 - Math.random();
