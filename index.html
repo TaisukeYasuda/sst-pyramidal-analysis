@@ -7,11 +7,11 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
   <!-- google charts -->
   <script type="text/javascript" src="https://www.google.com/jsapi?ext.js"></script>
+  <!-- jquery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <!-- jquery -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <!-- css -->
   <link rel="stylesheet" href="css/index.css">
   <!-- angular modules -->
@@ -31,60 +31,78 @@
       <select ng-model="selectedCell" ng-options="cell for cell in cells" ng-change="changeCell()"></select>
 
       <div ng-show="cellSelected">
-        <histogram data="histogramData"
-                  simdata="histogramSimData"
-                  title="{{selectedCell}}"
-                  bins="{{binSize}}"
-                  redraw="{{changed}}">
-        </histogram>
+        <h2>Histogram</h2>
+        <div id="chart-container">
+          <histogram data="histogramData"
+                    simdata="histogramSimData"
+                    title="{{selectedCell}}"
+                    zoomin="{{zoom}}"
+                    viewmax="{{histHeight}}"
+                    bins="{{binSize}}"
+                    redraw="{{changed}}">
+          </histogram>
 
-        <h2>Simulated Model</h2>
-        <div ng-repeat="contact in fitData.data[selectedCell]" class="panel panel-default contact">
-          Mean: <input type="number" step="0.001" min="0" ng-model="contact.q"><br>
-          <hr>
-          Std: <input type="number" step="0.001" min="0" ng-model="contact.s"><br>
-          <hr>
-          Prob: <input type="number" step="0.001" min="0" ng-model="contact.p"><br>
+          <div class="settings">
+            <table id="settings">
+              <tr>
+                <td>Zoom</td>
+                <td style="text-align: left">
+                  <input type="radio" name="zoom" ng-model="zoom" value="auto">Auto<br>
+                  <input type="radio" name="zoom" ng-model="zoom" value="set">Set to</input>
+                  <input type="number" ng-model="histHeight">
+                </td>
+              </tr>
+              <tr>
+                <td>Bin Size</td>
+                <td><input type="number" ng-model="binSize" step="0.01" min="0.01" max="1"></td>
+              </tr>
+              <tr>
+                <td>Trial Selection</td>
+                <td style="text-align: left">
+                  <input type="radio" ng-model="trial.choice" value="range" ng-change="changeData()"> Range<br>
+                  <input type="radio" ng-model="trial.choice" value="individual" ng-change="changeData()"> Individual
+                </td>
+              </tr>
+              <tr>
+                <td>Trials</td>
+                <td><input type="range" ng-model="trial.number" min="1" max="10" ng-change="changeData()">
+                    <input type="text" ng-model="trial.number" ng-change="changeData()">
+                </td>
+              </tr>
+              <tr>
+                <td>Show data</td>
+                <td><input type="checkbox" ng-model="showTable"></td>
+              </tr>
+            </table>
+          </div>
+          <div style="clear: both"></div>
         </div>
-        <div class="panel panel-default contact">
-          <button type="button" ng-click="simulate()" class="btn btn-default">Simulate</button>
+
+        <h2>Simulation</h2>
+        <div id="contacts">
+          <table>
+            <tr>
+              <td class="no-border">
+                <div class="panel panel-default contact">
+                  <button type="button" ng-click="simulate()" class="btn btn-default full-width">Simulate</button>
+                </div>
+              </td>
+              <td ng-repeat="contact in fitData.data[selectedCell]" class="no-border">
+                <div class="panel panel-default contact">
+                  Mean: <input type="number" step="0.001" min="0" ng-model="contact.q"><br>
+                  <hr>
+                  Std: <input type="number" step="0.001" min="0" ng-model="contact.s"><br>
+                  <hr>
+                  Prob: <input type="number" step="0.001" min="0" ng-model="contact.p"><br>
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
         <div style="clear: both"></div>
 
-        <h2>Settings</h2>
-        <table id="settings">
-          <tr>
-            <td>Zoom</td>
-            <td style="text-align: left">
-              <input type="radio" name="zoom" ng-model="zoom" value="auto">Auto<br>
-              <input type="radio" name="zoom" ng-model="zoom" value="set">Set to</input>
-              <input type="number" ng-model="histHeight">
-            </td>
-          </tr>
-          <tr>
-            <td>Bin Size</td>
-            <td><input type="number" ng-model="binSize" step="0.01" min="0.01" max="1"></td>
-          </tr>
-          <tr>
-            <td>Trial Selection</td>
-            <td style="text-align: left">
-              <input type="radio" ng-model="trial.choice" value="range" ng-change="changeData()"> Range<br>
-              <input type="radio" ng-model="trial.choice" value="individual" ng-change="changeData()"> Individual
-            </td>
-          </tr>
-          <tr>
-            <td>Trials</td>
-            <td><input type="range" ng-model="trial.number" min="1" max="10" ng-change="changeData()">
-                <input type="text" ng-model="trial.number" ng-change="changeData()">
-            </td>
-          </tr>
-          <tr>
-            <td>Show data</td>
-            <td><input type="checkbox" ng-model="showTable"></td>
-          </tr>
-        </table>
-
         <div id="table" ng-show="showTable">
+          <h2>Data Table</h2>
           <table>
             <th>Stimulus No.</th>
             <th ng-repeat="(trial,value) in cellData[selectedCell][1]">

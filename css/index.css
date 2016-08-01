@@ -2,17 +2,23 @@ body {
   font-size: 14px;
   padding: 20px;
 }
-pie-chart {
+histogram {
+  float: left;
+  width: 55%;
+  height: 400px;
+}
+.settings {
+  padding: 100px;
+  float: right;
+  width: 45%;
+  position: absolute;
+  right: 0px;
 }
 .bottom {
   clear: both;
   font-size: 0.9em;
   color: grey;
   padding: 2em 1em 0 1em;
-}
-h2 {
-  font-size: 1.3em;
-  margin: 0.8em 0.5em 0.1em 0.5em;
 }
 input {
   font-size: 0.8em;
@@ -33,19 +39,24 @@ tr.selected td {
   height: 200px;
   padding: 20px;
   margin: 10px;
-  float: left;
+  float: none;
+  display: inline-block;
+  white-space: nowrap;
+}
+.full-width {
+  width: 100%;
 }
 
-#table, th , td  {
+#table th td  {
   border: 1px solid grey;
   border-collapse: collapse;
   padding: 5px;
   table-layout: fixed;
 }
-table tr:nth-child(odd) {
+#table tr:nth-child(odd) {
   background-color: #f1f1f1;
 }
-table tr:nth-child(even) {
+#table tr:nth-child(even) {
   background-color: #ffffff;
 }
 #table {
@@ -54,6 +65,18 @@ table tr:nth-child(even) {
   overflow-y: hidden;
   overflow-x: scroll;
 }
+#contacts {
+  height: 100%;
+  width: auto;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+#contacts table, th, td {
+  border: 0px;
+}
+.no-border {
+  border: 0px;
+}
 .row-header {
   font-weight: bold;
   text-align: center;
@@ -61,4 +84,17 @@ table tr:nth-child(even) {
 
 #settings {
   text-align: center;
+  margin: auto;
+}
+#settings, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  table-layout: fixed;
+}
+#settings tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+#settings tr:nth-child(even) {
+  background-color: #ffffff;
 }

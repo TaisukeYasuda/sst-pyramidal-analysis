@@ -6,6 +6,8 @@ app.directive('histogram', function ($timeout) {
             width: '@width',
             height: '@height',
             bins: '@bins',
+            zoomin: '@zoomin',
+            viewmax: '@viewmax',
             simdata: '=simdata',
             redraw: '@redraw',
             data: '=data'
@@ -34,11 +36,18 @@ app.directive('histogram', function ($timeout) {
             $scope.$watch('bins', function () {
                 draw();
             });
+            $scope.$watch('viewmax', function () {
+                draw();
+            });
+            $scope.$watch('zoomin', function () {
+                draw();
+            });
             $scope.$watch('redraw', function () {
                 draw();
             });
 
             function draw() {
+                if ($scope.data == undefined) return;
                 if (!draw.triggered) {
                     draw.triggered = true;
                     $timeout(function () {
@@ -58,11 +67,15 @@ app.directive('histogram', function ($timeout) {
                         }
                         var options = {
                             'title': $scope.title,
-                            'width': 800,
-                            'height': 500,
+                            'height': 400,
                             'histogram': {'bucketSize': $scope.bins},
                             'dataOpacity': 0.8
                         };
+                        if ($scope.zoomin == 'set') {
+                            options.vAxis = {};
+                            options.vAxis.viewWindow = {};
+                            options.vAxis.viewWindow.max = $scope.viewmax;
+                        }
                         chart.draw(data, options);
                     }, 0, true);
                 }
