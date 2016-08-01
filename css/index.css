@@ -2,11 +2,6 @@ body {
   font-size: 14px;
   padding: 20px;
 }
-histogram {
-  float: left;
-  width: 55%;
-  height: 400px;
-}
 .settings {
   padding: 100px;
   float: right;

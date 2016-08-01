@@ -42,44 +42,8 @@
                     redraw="{{changed}}">
           </histogram>
 
-          <div class="settings">
-            <table id="settings">
-              <tr>
-                <td>Zoom</td>
-                <td style="text-align: left">
-                  <input type="radio" name="zoom" ng-model="zoom" value="auto">Auto<br>
-                  <input type="radio" name="zoom" ng-model="zoom" value="set">Set to</input>
-                  <input type="number" ng-model="histHeight">
-                </td>
-              </tr>
-              <tr>
-                <td>Bin Size</td>
-                <td><input type="number" ng-model="binSize" step="0.01" min="0.01" max="1"></td>
-              </tr>
-              <tr>
-                <td>Trial Selection</td>
-                <td style="text-align: left">
-                  <input type="radio" ng-model="trial.choice" value="range" ng-change="changeData()"> Range<br>
-                  <input type="radio" ng-model="trial.choice" value="individual" ng-change="changeData()"> Individual
-                </td>
-              </tr>
-              <tr>
-                <td>Trials</td>
-                <td><input type="range" ng-model="trial.number" min="1" max="10" ng-change="changeData()">
-                    <input type="text" ng-model="trial.number" ng-change="changeData()">
-                </td>
-              </tr>
-              <tr>
-                <td>Show data</td>
-                <td><input type="checkbox" ng-model="showTable"></td>
-              </tr>
-            </table>
-          </div>
-          <div style="clear: both"></div>
-        </div>
-
-        <h2>Simulation</h2>
         <div id="contacts">
+          <h2>Simulation</h2>
           <table>
             <tr>
               <td class="no-border">
@@ -194,6 +158,41 @@
 </div>
 
         <div style="clear: both"></div>
+        <div class="settings">
+          <table id="settings">
+            <tr>
+              <td>Zoom</td>
+              <td style="text-align: left">
+                <input type="radio" name="zoom" ng-model="zoom" value="auto">Auto<br>
+                <input type="radio" name="zoom" ng-model="zoom" value="set">Set to</input>
+                <input type="number" ng-model="histHeight">
+              </td>
+            </tr>
+            <tr>
+              <td>Bin Size</td>
+              <td><input type="number" ng-model="binSize" step="0.01" min="0.01" max="1"></td>
+            </tr>
+            <tr>
+              <td>Trial Selection</td>
+              <td style="text-align: left">
+                <input type="radio" ng-model="trial.choice" value="range" ng-change="changeData()"> Range<br>
+                <input type="radio" ng-model="trial.choice" value="individual" ng-change="changeData()"> Individual
+              </td>
+            </tr>
+            <tr>
+              <td>Trials</td>
+              <td><input type="range" ng-model="trial.number" min="1" max="10" ng-change="changeData()">
+                  <input type="text" ng-model="trial.number" ng-change="changeData()">
+              </td>
+            </tr>
+            <tr>
+              <td>Show data</td>
+              <td><input type="checkbox" ng-model="showTable"></td>
+            </tr>
+          </table>
+        </div>
+        <div style="clear: both"></div>
+      </div>
 
         <div id="table" ng-show="showTable">
           <h2>Data Table</h2>

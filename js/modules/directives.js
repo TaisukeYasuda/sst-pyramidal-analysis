@@ -1,4 +1,4 @@
-app.directive('histogram', function ($timeout) {
+app.directive('histogram', function ($timeout, $window) {
     return {
         restrict: 'EA',
         scope: {
@@ -13,6 +13,12 @@ app.directive('histogram', function ($timeout) {
             data: '=data'
         },
         link: function ($scope, $elm, $attr) {
+            $scope.width = $window.innerWidth*0.9;
+            angular.element($window).bind('resize', function(){
+                $scope.width = $window.innerWidth*0.9;
+                draw();
+                scope.$digest();
+            });
 
             // Create the data table and instantiate the chart
             var data = new google.visualization.DataTable();
@@ -67,7 +73,8 @@ app.directive('histogram', function ($timeout) {
                         }
                         var options = {
                             'title': $scope.title,
-                            'height': 400,
+                            'width': $scope.width,
+                            'height': $scope.width*5/8,
                             'histogram': {'bucketSize': $scope.bins},
                             'dataOpacity': 0.8
                         };
