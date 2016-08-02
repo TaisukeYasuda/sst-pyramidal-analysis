@@ -32,6 +32,10 @@ app.controller('ctrl', function ($scope, $http) {
     $scope.zoom = 'auto';
     $scope.histHeight = 20;
 
+    $scope.stats = {};
+    $scope.stats['count'] = {};
+    $scope.stats['failure rate'] = {};
+
     $scope.deleteContact = function (index) {
         $scope.fitData.data[$scope.selectedCell].splice(index, 1);
     };
@@ -43,11 +47,8 @@ app.controller('ctrl', function ($scope, $http) {
         $scope.modalQ = undefined;
         $scope.modalS = undefined;
     };
-    $scope.selectRow = function (index) {
-        $scope.selected = index;
-    };
-    $scope.rowClass = function (index) {
-        return ($scope.selected === index) ? "selected" : "";
+    $scope.resetSim = function () {
+        $scope.histogramSimData = undefined;
     };
     $scope.redraw = function () {
         $scope.changed = !$scope.changed;
@@ -126,6 +127,7 @@ app.controller('ctrl', function ($scope, $http) {
             $scope.fitData.data[$scope.selectedCell] = JSON.parse(JSON.stringify($scope.fitData.defaultData));
         }
         $scope.histogramSimData = undefined;
+        $scope.stats['count']['cell'] = $scope.histogramData.length;
     };
     $scope.changeData = function () {
         $scope.histogramSimData = undefined;

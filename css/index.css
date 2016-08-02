@@ -35,6 +35,10 @@ tr.selected td {
   display: inline-block;
   white-space: nowrap;
 }
+.contact p {
+  text-align: center;
+  font-weight: bold;
+}
 .full-width {
   width: 100%;
 }
@@ -77,20 +81,20 @@ tr.selected td {
   text-align: center;
 }
 
-#settings {
+.styled-table {
   text-align: center;
   margin: auto;
 }
-#settings, th , td  {
+.styled-table, th , td  {
   border: 1px solid grey;
   border-collapse: collapse;
   padding: 5px;
   table-layout: fixed;
 }
-#settings tr:nth-child(odd) {
+.styled-table tr:nth-child(odd) {
   background-color: #f1f1f1;
 }
-#settings tr:nth-child(even) {
+.styled-table tr:nth-child(even) {
   background-color: #ffffff;
 }
 .modal-body .form-horizontal .col-sm-2,

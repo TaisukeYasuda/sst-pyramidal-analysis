@@ -17,7 +17,7 @@ app.directive('histogram', function ($timeout, $window) {
             angular.element($window).bind('resize', function(){
                 $scope.width = $window.innerWidth*0.9;
                 draw();
-                scope.$digest();
+                $scope.$digest();
             });
 
             // Create the data table and instantiate the chart
