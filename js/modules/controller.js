@@ -1,5 +1,5 @@
 app.controller('ctrl', function ($scope, $http) {
-    //$scope.base = "http://localhost:8000/";
+    // $scope.base = "http://localhost:8000/";
     $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
@@ -34,6 +34,7 @@ app.controller('ctrl', function ($scope, $http) {
 
     $scope.stats = {};
     $scope.stats['count'] = {};
+    $scope.stats['num zeros'] = {};
     $scope.stats['failure rate'] = {};
 
     $scope.deleteContact = function (index) {
@@ -49,6 +50,7 @@ app.controller('ctrl', function ($scope, $http) {
     };
     $scope.resetSim = function () {
         $scope.histogramSimData = undefined;
+        $scope.stats.count.sim = undefined;
     };
     $scope.redraw = function () {
         $scope.changed = !$scope.changed;
@@ -90,6 +92,10 @@ app.controller('ctrl', function ($scope, $http) {
         var numReps = $scope.histogramData.length;
         var responses = simulate($scope.fitData.data[$scope.selectedCell], numReps);
         $scope.histogramSimData = responses.slice();
+        $scope.stats.count.sim = $scope.histogramSimData.length;
+        $scope.stats['num zeros'].sim = count($scope.histogramSimData,0);
+        $scope.stats['failure rate'].sim =
+          count($scope.histogramSimData,0)*1.0/$scope.histogramSimData.length;
     }
     $scope.processData = function (cell, choice, number) {
         var result = [];
@@ -106,6 +112,15 @@ app.controller('ctrl', function ($scope, $http) {
         });
         return result;
     };
+    function count(a,s) {
+        var result = 0;
+        for (var i = 0; i < a.length; i++) {
+            var b = a[i];
+            if (Array.isArray(a[i])) b = parseFloat(a[i][1]);
+            if (b == s*1.0) result++;
+        }
+        return result;
+    }
     $scope.changeCell = function () {
         $scope.zeros = true;
         $scope.trial = {};
@@ -116,9 +131,16 @@ app.controller('ctrl', function ($scope, $http) {
             $http.get($scope.base+"data/json/"+name+".json").then(function(response) {
                 $scope.cellData[name] = response.data;
                 $scope.histogramData = $scope.processData(response.data,$scope.trial.choice,$scope.trial.number);
+                $scope.stats.count.cell = $scope.histogramData.length;
+                $scope.stats['num zeros'].cell = count($scope.histogramData,0);
+                $scope.stats['failure rate'].cell =
+                  count($scope.histogramData,0)*1.0/$scope.histogramData.length;
             });
         } else {
             $scope.histogramData = $scope.processData($scope.cellData[name],$scope.trial.choice,$scope.trial.number);
+            $scope.stats.count.cell = $scope.histogramData.length;
+            $scope.stats['failure rate'].cell =
+              count($scope.histogramData,0)*1.0/$scope.histogramData.length;
         }
         $scope.cellSelected = true;
 
@@ -127,10 +149,16 @@ app.controller('ctrl', function ($scope, $http) {
             $scope.fitData.data[$scope.selectedCell] = JSON.parse(JSON.stringify($scope.fitData.defaultData));
         }
         $scope.histogramSimData = undefined;
-        $scope.stats['count']['cell'] = $scope.histogramData.length;
+        $scope.stats.count.sim = undefined;
+        $scope.stats['failure rate'].sim = undefined;
     };
     $scope.changeData = function () {
         $scope.histogramSimData = undefined;
         $scope.histogramData = $scope.processData($scope.cellData[$scope.selectedCell],$scope.trial.choice,$scope.trial.number);
+        $scope.stats.count.cell = $scope.histogramData.length;
+        $scope.stats['failure rate'].cell =
+          count($scope.histogramData,0)*1.0/$scope.histogramData.length;
+        $scope.stats.count.sim = undefined;
+        $scope.stats['failure rate'].sim = undefined;
     };
 });
