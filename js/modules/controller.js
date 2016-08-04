@@ -1,5 +1,5 @@
 app.controller('ctrl', function ($scope, $http) {
-    // $scope.base = "http://localhost:8000/";
+    //$scope.base = "http://localhost:8000/";
     $scope.base = "https://taisukeyasuda.github.io/sst-pyramidal-analysis/";
 
     // retrieve cell names
@@ -139,6 +139,7 @@ app.controller('ctrl', function ($scope, $http) {
         } else {
             $scope.histogramData = $scope.processData($scope.cellData[name],$scope.trial.choice,$scope.trial.number);
             $scope.stats.count.cell = $scope.histogramData.length;
+            $scope.stats['num zeros'].cell = count($scope.histogramData,0);
             $scope.stats['failure rate'].cell =
               count($scope.histogramData,0)*1.0/$scope.histogramData.length;
         }
@@ -156,9 +157,11 @@ app.controller('ctrl', function ($scope, $http) {
         $scope.histogramSimData = undefined;
         $scope.histogramData = $scope.processData($scope.cellData[$scope.selectedCell],$scope.trial.choice,$scope.trial.number);
         $scope.stats.count.cell = $scope.histogramData.length;
+        $scope.stats['num zeros'].cell = count($scope.histogramData,0);
         $scope.stats['failure rate'].cell =
           count($scope.histogramData,0)*1.0/$scope.histogramData.length;
         $scope.stats.count.sim = undefined;
         $scope.stats['failure rate'].sim = undefined;
+        $scope.stats['num zeros'].sim = undefined;
     };
 });

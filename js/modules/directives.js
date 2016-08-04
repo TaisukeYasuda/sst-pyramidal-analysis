@@ -83,7 +83,12 @@ app.directive('histogram', function ($timeout, $window) {
                             options.vAxis.viewWindow = {};
                             options.vAxis.viewWindow.max = $scope.viewmax;
                         }
+                        google.visualization.events.addListener(chart, 'ready', function () {
+                          document.getElementById('download').innerHTML =
+                            '<a class="btn btn-default" target="_blank" href="' + chart.getImageURI() + '">Download Histogram</a>';
+                        });
                         chart.draw(data, options);
+
                     }, 0, true);
                 }
             }
