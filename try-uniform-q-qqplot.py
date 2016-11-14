@@ -1,15 +1,11 @@
 
 #########################################################################
-# QQ plot analysis of a trial and N over different widths.
-# 08/06/2016
-# Update variance s: better estimate from data.
-# 08/12/2016
-# Bug fix in variance estimate, make graphs look better.
-# 11/03/2016
+# QQ plot and KS analysis of uniform model.
 # Taisuke Yasuda
 #########################################################################
 
 import numpy as np
+from scipy import stats
 import math
 import random
 import matplotlib.pyplot as plt
@@ -17,10 +13,6 @@ import os
 import sys
 import pandas as pd
 import qqplotlib as qq
-
-# if (len(sys.argv) <= 1):
-#     sys.exit('Please enter a cell name and trial number.')
-# cell = sys.argv[1]
 
 ############ data to use ############
 
@@ -71,18 +63,13 @@ cell_data = get_cell_data()
 cells = cell_data.keys()
 num_trials = 10
 
-# if (cell not in cells):
-#     sys.exit('Please enter a valid cell.')
-
 fig = plt.figure(figsize=(15,12))
 plt.axis('off')
 
 N_min, N_max = 3,11
-path = './try-uniform-q/qq-plots/nov-14-2016/'
+path = './results/uniform/nov-14-2016/'
 
 #### response amplitudes over trial, over repetition ####
-# data = cell_data[cell]
-# print(cell)
 for cell in cells:
     data = cell_data[cell]
     print(cell)
@@ -96,21 +83,14 @@ for cell in cells:
         for N in range(N_min,N_max+1):
             print('\t'+str(N))
             plot_count = 0
-            #### plot original ####
-            # plot_count += 1
-            # subplot = '33'+str(plot_count)
-            # ax = fig.add_subplot(subplot)
-            # ax.cla()
-            # ax.set_title('Original Data')
-            # binwidth = 0.01
-            # bins=np.arange(min(sheet)-binwidth, max(sheet) + 2*binwidth, binwidth)
-            # ax.hist(sheet,bins,color='blue')
-            # ax.set_ylim([0,50])
 
             p = prob(p_f,N)
             mean = A*1.0/(N*p)
             num_widths = 9
             widths = np.arange(0,2*mean,2*mean*1.0/num_widths).tolist()
+
+            # ks statistics
+            k = []
             for w in widths:
                 plot_count += 1
                 subplot = '33'+str(plot_count)
@@ -121,12 +101,6 @@ for cell in cells:
                 qqplot = qq.qqplot(result)
 
                 quantiles = qqplot['quantiles']
-                # for sample in qqplot['samples']:
-                #     ax.scatter(quantiles,sample,marker='.',color='blue')
-                # for j in range(len(quantiles)):
-                #     ax.plot([quantiles[j],quantiles[j]],qqplot['intervals'][j],
-                #         marker='_',color='yellow')
-                # ax.scatter(quantiles,qqplot['obs_nonzero'],color='red')
 
                 # nov 03 2016 ver
                 for sample in qqplot['samples']:
@@ -141,11 +115,23 @@ for cell in cells:
                 ax.plot([0,maximum],[0,maximum],color='black')
                 ax.set_xlim([0,max(quantiles)+0.1])
                 ax.set_ylim([0,maximum])
-                #
 
-                # maximum = qqplot['maximum']
-                # ax.plot([0,maximum],[0,maximum],color='black')
+                # ks statistics
+                quantiles = qqplot['quantiles']
+                obs = qqplot['obs_nonzero']
+                sim = qqplot['samples']
+
+                sim = reduce((lambda x, y: x + y), sim)
+                k.append(stats.ks_2samp(obs,sim)[1])
 
             fig.suptitle(cell+', Trial '+str(i)+', N = '+str(N))
-            plt.savefig(path+cell+'-'+str(i)+'-'+str(N)+'-qq.png')
+            plt.savefig(path+'/qq/'+cell+'-'+str(i)+'-'+str(N)+'-qq.png')
+            fig.clf()
+
+            ax.plot(widths,k,color='green')
+            ax.set_xlabel('distribution width')
+            ax.set_ylabel('KS test p value')
+
+            fig.suptitle(cell+', Trial '+str(i)+', N = '+str(N))
+            plt.savefig(path+/ks/+cell+'-'+str(i)+'-'+str(N)+'-ks.png')
             fig.clf()

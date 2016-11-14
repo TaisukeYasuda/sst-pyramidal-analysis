@@ -1,19 +1,11 @@
 
 #########################################################################
-# QQ plot analysis of distribution guessing constant values.
-# 08/04/2016
-# Update variance s: better estimate from data.
-# 08/12/2016
-# Set lower y_lim and fix limits for qq plots
-# 10/01/2016
-# Update variance s: fix bug
-# 11/01/2016
-# Make look better
-# 11/03/2016
+# QQ plot and KS analysis of constant model. 
 # Taisuke Yasuda
 #########################################################################
 
 import numpy as np
+from scipy import stats
 import math
 import random
 import matplotlib.pyplot as plt
@@ -69,29 +61,23 @@ fig = plt.figure(figsize=(15,12))
 plt.axis('off')
 
 N_min, N_max = 3,11
-path = './try-all-constant/qq-plots/nov-03-2016/'
+path = './results/constant/nov-14-2016/'
 
 #### response amplitudes over trial, over repetition ####
 for cell in cells:
     print(cell)
     data = cell_data[cell]
+
     for i in range(1,num_trials+1):
         print('\t'+str(i))
         sheet = data[i].tolist()
         plot_count = 0
-        #### plot original ####
-        # plot_count += 1
-        # subplot = '33'+str(plot_count)
-        # ax = fig.add_subplot(subplot)
-        # ax.cla()
-        # ax.set_title('Original Data')
-        # binwidth = 0.01
-        # bins=np.arange(min(sheet)-binwidth, max(sheet) + 2*binwidth, binwidth)
-        # ax.hist(sheet,bins,color='blue')
-        # ax.set_ylim([0,20])
 
+        # ks statistics
+        k = []
         #### plot simulations ####
         for N in range(N_min,N_max+1):
+            print('\t\t'+str(N))
             plot_count += 1
             subplot = '33'+str(plot_count)
             ax = fig.add_subplot(subplot)
@@ -101,14 +87,7 @@ for cell in cells:
             qqplot = qq.qqplot(result)
 
             quantiles = qqplot['quantiles']
-            # for sample in qqplot['samples']:
-            #     ax.scatter(quantiles,sample,marker='.',color='blue')
-            # for j in range(len(quantiles)):
-            #     ax.plot([quantiles[j],quantiles[j]],qqplot['intervals'][j],
-            #         marker='_',color='yellow')
-            # ax.scatter(quantiles,qqplot['obs_nonzero'],color='red')
 
-            # nov 03 2016 ver
             for sample in qqplot['samples']:
                 ax.scatter(quantiles,sample,marker='.',color='lightblue')
             curve1 = [x[0] for x in qqplot['intervals']]
@@ -116,11 +95,32 @@ for cell in cells:
             ax.plot(quantiles,curve1,color='blue')
             ax.plot(quantiles,curve2,color='blue')
             ax.plot(quantiles,qqplot['obs_nonzero'],linewidth=2,color='red')
-            #
 
             maximum = qqplot['maximum']
             ax.plot([0,maximum],[0,maximum],color='black')
             ax.set_xlim([0,max(quantiles)+0.1])
             ax.set_ylim([0,maximum])
 
-        plt.savefig(path+cell+'-'+str(i)+'-qq.png')
+            # ks computation
+            obs = qqplot['obs_nonzero']
+            sim = qqplot['samples']
+            sim = reduce((lambda x, y: x + y), sim)
+            k.append(stats.ks_2samp(obs,sim)[1])
+
+        plt.savefig(path+'/qq/'+cell+'-'+str(i)+'-qq.png')
+        plt.clf()
+
+        # ks plot
+        ind = np.arange(N_max-N_min+1)  # the x locations for the groups
+        width = 0.35                   # the width of the bars
+
+        ax = fig.add_subplot('111')
+        rects1 = ax.bar(ind, k, width, color='r')
+
+        # add some text for labels, title and axes ticks
+        ax.set_ylabel('KS p value')
+        ax.set_xlabel('N')
+        ax.set_xticks(ind + (width/2))
+        ax.set_xticklabels(('3', '4', '5', '6', '7', '8', '9', '10', '11'))
+        plt.savefig(path+'/ks/'+cell+'-'+str(i)+'-ks.png')
+        plt.clf()
